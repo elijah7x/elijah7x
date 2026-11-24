@@ -38,7 +38,7 @@
 <g id="section-metrics">
 <rect x="232" y="40" width="137" height="66" rx="4" fill="#0B160F" stroke="#1E4D2B" stroke-width="1"/><g shape-rendering="crispEdges"><rect x="232" y="40" width="3" height="3" fill="#22C55E"/><rect x="366" y="40" width="3" height="3" fill="#22C55E"/><rect x="232" y="103" width="3" height="3" fill="#22C55E"/><rect x="366" y="103" width="3" height="3" fill="#22C55E"/></g>
 <text x="300" y="60" text-anchor="middle" fill="#9BC4A8" font-family="&apos;SF Mono&apos;, &apos;JetBrains Mono&apos;, &apos;Fira Code&apos;, ui-monospace, Menlo, Consolas, monospace" font-size="9" font-weight="600" letter-spacing="0.6">CONTRIBUTIONS (1Y)</text>
-<text x="300" y="89" text-anchor="middle" fill="#39FF14" font-family="&apos;SF Mono&apos;, &apos;JetBrains Mono&apos;, &apos;Fira Code&apos;, ui-monospace, Menlo, Consolas, monospace" font-size="21" font-weight="800" filter="url(#matrix-glow)" style="animation: pulse-glow 3.2s ease-in-out 0.00s infinite;">1,043</text>
+<text x="300" y="89" text-anchor="middle" fill="#39FF14" font-family="&apos;SF Mono&apos;, &apos;JetBrains Mono&apos;, &apos;Fira Code&apos;, ui-monospace, Menlo, Consolas, monospace" font-size="21" font-weight="800" filter="url(#matrix-glow)" style="animation: pulse-glow 3.2s ease-in-out 0.00s infinite;">1,049</text>
 <rect x="379" y="40" width="137" height="66" rx="4" fill="#0B160F" stroke="#1E4D2B" stroke-width="1"/><g shape-rendering="crispEdges"><rect x="379" y="40" width="3" height="3" fill="#22C55E"/><rect x="513" y="40" width="3" height="3" fill="#22C55E"/><rect x="379" y="103" width="3" height="3" fill="#22C55E"/><rect x="513" y="103" width="3" height="3" fill="#22C55E"/></g>
 <text x="447" y="60" text-anchor="middle" fill="#9BC4A8" font-family="&apos;SF Mono&apos;, &apos;JetBrains Mono&apos;, &apos;Fira Code&apos;, ui-monospace, Menlo, Consolas, monospace" font-size="9" font-weight="600" letter-spacing="0.6">TOTAL STARS</text>
 <text x="447" y="89" text-anchor="middle" fill="#39FF14" font-family="&apos;SF Mono&apos;, &apos;JetBrains Mono&apos;, &apos;Fira Code&apos;, ui-monospace, Menlo, Consolas, monospace" font-size="21" font-weight="800" filter="url(#matrix-glow)" style="animation: pulse-glow 3.2s ease-in-out 0.35s infinite;">48</text>
@@ -71,7 +71,7 @@
 <rect x="787" y="76" width="8" height="10" rx="1" fill="#162E1E"/>
 <rect x="798" y="76" width="8" height="10" rx="1" fill="#162E1E"/>
 <rect x="809" y="76" width="8" height="10" rx="1" fill="#162E1E"/>
-<text x="866" y="85" text-anchor="end" fill="#F05138" font-family="&apos;SF Mono&apos;, &apos;JetBrains Mono&apos;, &apos;Fira Code&apos;, ui-monospace, Menlo, Consolas, monospace" font-size="10" font-weight="700">53.1%</text>
+<text x="866" y="85" text-anchor="end" fill="#F05138" font-family="&apos;SF Mono&apos;, &apos;JetBrains Mono&apos;, &apos;Fira Code&apos;, ui-monospace, Menlo, Consolas, monospace" font-size="10" font-weight="700">53.0%</text>
 <text x="550" y="105" fill="#E2F5E8" font-family="&apos;SF Mono&apos;, &apos;JetBrains Mono&apos;, &apos;Fira Code&apos;, ui-monospace, Menlo, Consolas, monospace" font-size="10.5" font-weight="600">TypeScript</text>
 <rect x="644" y="96" width="8" height="10" rx="1" fill="#38BDF8" style="animation: seg-shimmer 2.8s ease-in-out 0.18s infinite;"/>
 <rect x="655" y="96" width="8" height="10" rx="1" fill="#38BDF8" style="animation: seg-shimmer 2.8s ease-in-out 0.23s infinite;"/>
@@ -107,7 +107,7 @@
 <rect x="787" y="116" width="8" height="10" rx="1" fill="#162E1E"/>
 <rect x="798" y="116" width="8" height="10" rx="1" fill="#162E1E"/>
 <rect x="809" y="116" width="8" height="10" rx="1" fill="#162E1E"/>
-<text x="866" y="125" text-anchor="end" fill="#39FF14" font-family="&apos;SF Mono&apos;, &apos;JetBrains Mono&apos;, &apos;Fira Code&apos;, ui-monospace, Menlo, Consolas, monospace" font-size="10" font-weight="700">6.6%</text>
+<text x="866" y="125" text-anchor="end" fill="#39FF14" font-family="&apos;SF Mono&apos;, &apos;JetBrains Mono&apos;, &apos;Fira Code&apos;, ui-monospace, Menlo, Consolas, monospace" font-size="10" font-weight="700">6.7%</text>
 <text x="550" y="145" fill="#E2F5E8" font-family="&apos;SF Mono&apos;, &apos;JetBrains Mono&apos;, &apos;Fira Code&apos;, ui-monospace, Menlo, Consolas, monospace" font-size="10.5" font-weight="600">JavaScript</text>
 <rect x="644" y="136" width="8" height="10" rx="1" fill="#F7DF1E" style="animation: seg-shimmer 2.8s ease-in-out 0.54s infinite;"/>
 <rect x="655" y="136" width="8" height="10" rx="1" fill="#162E1E"/>
@@ -143,6 +143,6 @@
 <rect x="787" y="156" width="8" height="10" rx="1" fill="#162E1E"/>
 <rect x="798" y="156" width="8" height="10" rx="1" fill="#162E1E"/>
 <rect x="809" y="156" width="8" height="10" rx="1" fill="#162E1E"/>
-<text x="866" y="165" text-anchor="end" fill="#012456" font-family="&apos;SF Mono&apos;, &apos;JetBrains Mono&apos;, &apos;Fira Code&apos;, ui-monospace, Menlo, Consolas, monospace" font-size="10" font-weight="700">4.7%</text>
+<text x="866" y="165" text-anchor="end" fill="#012456" font-family="&apos;SF Mono&apos;, &apos;JetBrains Mono&apos;, &apos;Fira Code&apos;, ui-monospace, Menlo, Consolas, monospace" font-size="10" font-weight="700">4.8%</text>
 </g>
 </svg>
