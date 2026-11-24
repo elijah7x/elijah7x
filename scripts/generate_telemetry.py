@@ -20,8 +20,8 @@ if str(SCRIPT_DIR) not in sys.path:
 
 from pixel_lib import (  # noqa: E402
     FONT_MONO,
-    PALETTE,
     escape_xml,
+    get_palette,
     render_pixel_text,
     render_sprite,
     render_terminal_frame,
@@ -54,6 +54,18 @@ LANGUAGE_COLOR_OVERRIDES: dict[str, str] = {
     "Shell": "#4ADE80",
     "HTML": "#FB923C",
     "Go": "#00ADD8",
+}
+
+LIGHT_LANGUAGE_COLOR_OVERRIDES: dict[str, str] = {
+    "Python": "#16A34A",
+    "JavaScript": "#CA8A04",
+    "CSS": "#DB2777",
+    "TypeScript": "#0284C7",
+    "Swift": "#EA580C",
+    "Rust": "#B45309",
+    "Shell": "#15803D",
+    "HTML": "#EA580C",
+    "Go": "#0369A1",
 }
 
 GRAPHQL_QUERY = """
@@ -110,15 +122,17 @@ POCKET_SPRITE: list[str] = [
     "........................",
 ]
 
-SPRITE_COLOR_MAP: dict[str, str] = {
-    "K": "#07131D",
-    "B": PALETTE["dora_blue"],
-    "R": PALETTE["dora_red"],
-    "G": PALETTE["dora_gold"],
-    "W": PALETTE["white"],
-    "S": "#CBD5E1",
-    "D": PALETTE["bg"],
-}
+def _build_sprite_color_map(p: dict[str, str]) -> dict[str, str]:
+    """Build the 4D Pocket sprite color map from a theme palette."""
+    return {
+        "K": "#07131D",
+        "B": p["dora_blue"],
+        "R": p["dora_red"],
+        "G": p["bell_gold"],
+        "W": p["white"],
+        "S": "#CBD5E1",
+        "D": p["portal_bg"],
+    }
 
 
 def _resolve_token(offline: bool) -> str | None:
@@ -200,7 +214,7 @@ def fetch_github_stats(user: str, offline: bool = False) -> dict[str, Any]:
             lang_totals[name] = lang_totals.get(name, 0) + size
             if name not in lang_colors:
                 raw_color = str(lang_node.get("color") or "").strip()
-                lang_colors[name] = LANGUAGE_COLOR_OVERRIDES.get(name) or raw_color or PALETTE["green"]
+                lang_colors[name] = LANGUAGE_COLOR_OVERRIDES.get(name) or raw_color or "#39FF14"
 
     total_bytes = sum(lang_totals.values())
     if total_bytes <= 0:
@@ -208,7 +222,7 @@ def fetch_github_stats(user: str, offline: bool = False) -> dict[str, Any]:
     else:
         sorted_langs = sorted(lang_totals.items(), key=lambda item: item[1], reverse=True)[:5]
         languages = [
-            (name, round((byte_count / total_bytes) * 100.0, 1), lang_colors.get(name, PALETTE["green"]))
+            (name, round((byte_count / total_bytes) * 100.0, 1), lang_colors.get(name, "#39FF14"))
             for name, byte_count in sorted_langs
         ]
 
@@ -220,51 +234,63 @@ def fetch_github_stats(user: str, offline: bool = False) -> dict[str, Any]:
     }
 
 
-def _render_panel_box(x: int, y: int, width: int, height: int) -> str:
-    """Render a dark Matrix sub-panel with crisp green pixel corner ticks."""
-    g = PALETTE["green"]
+def _resolve_language_color(lang_name: str, raw_color: str, p: dict[str, str], theme: str) -> str:
+    """Resolve a high-contrast language accent color for the requested theme."""
+    if theme == "light":
+        if lang_name in LIGHT_LANGUAGE_COLOR_OVERRIDES:
+            return LIGHT_LANGUAGE_COLOR_OVERRIDES[lang_name]
+        if raw_color.upper() == "#39FF14":
+            return p["telemetry_value"]
+        return raw_color
+    return LANGUAGE_COLOR_OVERRIDES.get(lang_name) or raw_color or p["green"]
+
+
+def _render_panel_box(x: int, y: int, width: int, height: int, p: dict[str, str]) -> str:
+    """Render a themed Matrix sub-panel with crisp pixel corner ticks."""
+    corner = p["border_bright"]
     return "".join(
         [
             f'<rect x="{x}" y="{y}" width="{width}" height="{height}" rx="4" '
-            f'fill="{PALETTE["bg_panel"]}" stroke="{PALETTE["border"]}" stroke-width="1"/>',
+            f'fill="{p["tile_bg"]}" stroke="{p["border"]}" stroke-width="1"/>',
             '<g shape-rendering="crispEdges">',
-            f'<rect x="{x}" y="{y}" width="3" height="3" fill="{g}"/>',
-            f'<rect x="{x + width - 3}" y="{y}" width="3" height="3" fill="{g}"/>',
-            f'<rect x="{x}" y="{y + height - 3}" width="3" height="3" fill="{g}"/>',
-            f'<rect x="{x + width - 3}" y="{y + height - 3}" width="3" height="3" fill="{g}"/>',
+            f'<rect x="{x}" y="{y}" width="3" height="3" fill="{corner}"/>',
+            f'<rect x="{x + width - 3}" y="{y}" width="3" height="3" fill="{corner}"/>',
+            f'<rect x="{x}" y="{y + height - 3}" width="3" height="3" fill="{corner}"/>',
+            f'<rect x="{x + width - 3}" y="{y + height - 3}" width="3" height="3" fill="{corner}"/>',
             "</g>",
         ]
     )
 
 
-def _render_pocket_section() -> str:
+def _render_pocket_section(p: dict[str, str], use_glow: bool) -> str:
     """Render left section (x=20..215): 4D Pocket sprite, rising Matrix particles, caption."""
     font = escape_xml(FONT_MONO)
-    green = PALETTE["green"]
+    sprite_colors = _build_sprite_color_map(p)
 
     parts: list[str] = [
         '<g id="section-pocket">',
-        _render_panel_box(20, 40, 195, 140),
-        render_sprite(POCKET_SPRITE, SPRITE_COLOR_MAP, x=69, y=72, px=4),
+        _render_panel_box(20, 40, 195, 140, p),
+        render_sprite(POCKET_SPRITE, sprite_colors, x=69, y=72, px=4),
     ]
 
     # Small 3x3 Matrix pixels rising well-spaced vertically above the pocket opening (y=108..116)
     particles = [
-        (100, 98, 3, PALETTE["green"], "0s", "2.4s"),
-        (122, 90, 3, PALETTE["green_soft"], "-0.6s", "2.6s"),
-        (108, 80, 3, PALETTE["green"], "-1.2s", "2.2s"),
-        (127, 72, 3, PALETTE["green_mid"], "-1.8s", "2.5s"),
-        (114, 62, 3, PALETTE["green_soft"], "-0.9s", "2.3s"),
+        (100, 98, 3, p["green"], "0s", "2.4s"),
+        (122, 90, 3, p["green"], "-0.6s", "2.6s"),
+        (108, 80, 3, p["green"], "-1.2s", "2.2s"),
+        (127, 72, 3, p["green"], "-1.8s", "2.5s"),
+        (114, 62, 3, p["green"], "-0.9s", "2.3s"),
     ]
+    particle_attr = 'filter="url(#matrix-glow)"' if use_glow else 'shape-rendering="crispEdges"'
     for px_x, px_y, size, color, delay, dur in particles:
         parts.append(
             f'<rect x="{px_x}" y="{px_y}" width="{size}" height="{size}" '
             f'fill="{color}" style="animation: pocket-rise {dur} linear {delay} infinite;" '
-            f'filter="url(#matrix-glow)"/>'
+            f'{particle_attr}/>'
         )
 
     parts.append(
-        f'<text x="117" y="168" text-anchor="middle" fill="{green}" '
+        f'<text x="117" y="168" text-anchor="middle" fill="{p["telemetry_value"]}" '
         f'font-family="{font}" font-size="10.5" font-weight="700" '
         f'letter-spacing="1.2">4D-POCKET // LIVE</text>'
     )
@@ -272,10 +298,9 @@ def _render_pocket_section() -> str:
     return "\n".join(parts)
 
 
-def _render_metric_tiles(stats: dict[str, Any]) -> str:
-    """Render middle section (x=232..516): 2x2 glowing pixel metric tiles."""
+def _render_metric_tiles(stats: dict[str, Any], p: dict[str, str], use_glow: bool) -> str:
+    """Render middle section (x=232..516): 2x2 pixel metric tiles."""
     font = escape_xml(FONT_MONO)
-    green = PALETTE["green"]
 
     top_lang = stats["languages"][0][0] if stats.get("languages") else "Swift"
     if len(top_lang) > 11:
@@ -291,21 +316,22 @@ def _render_metric_tiles(stats: dict[str, Any]) -> str:
     parts: list[str] = ['<g id="section-metrics">']
     tile_w = 137
     tile_h = 66
+    glow_attr = 'filter="url(#matrix-glow)" ' if use_glow else ""
     for idx, (tx, ty, label, value) in enumerate(tiles):
         cx = tx + tile_w // 2
         val_size = 21 if len(value) <= 6 else (17 if len(value) <= 9 else 14.5)
         delay = f"{idx * 0.35:.2f}s"
 
-        parts.append(_render_panel_box(tx, ty, tile_w, tile_h))
+        parts.append(_render_panel_box(tx, ty, tile_w, tile_h, p))
         parts.append(
-            f'<text x="{cx}" y="{ty + 20}" text-anchor="middle" fill="{PALETTE["muted"]}" '
+            f'<text x="{cx}" y="{ty + 20}" text-anchor="middle" fill="{p["text_secondary"]}" '
             f'font-family="{font}" font-size="9" font-weight="600" '
             f'letter-spacing="0.6">{escape_xml(label)}</text>'
         )
         parts.append(
-            f'<text x="{cx}" y="{ty + 49}" text-anchor="middle" fill="{green}" '
+            f'<text x="{cx}" y="{ty + 49}" text-anchor="middle" fill="{p["telemetry_value"]}" '
             f'font-family="{font}" font-size="{val_size}" font-weight="800" '
-            f'filter="url(#matrix-glow)" style="animation: pulse-glow 3.2s ease-in-out {delay} infinite;">'
+            f'{glow_attr}style="animation: pulse-glow 3.2s ease-in-out {delay} infinite;">'
             f'{escape_xml(value)}</text>'
         )
 
@@ -313,18 +339,21 @@ def _render_metric_tiles(stats: dict[str, Any]) -> str:
     return "\n".join(parts)
 
 
-def _render_language_matrix(languages: list[tuple[str, float, str]]) -> str:
+def _render_language_matrix(
+    languages: list[tuple[str, float, str]],
+    p: dict[str, str],
+    theme: str,
+) -> str:
     """Render right section (x=538..878): LANGUAGE MATRIX header + 5 discrete 16-block bars."""
     font = escape_xml(FONT_MONO)
-    green = PALETTE["green"]
 
     parts: list[str] = [
         '<g id="section-languages">',
-        _render_panel_box(538, 40, 340, 140),
-        render_pixel_text("LANGUAGE MATRIX", x=550, y=47, px=2, fill=green, letter_spacing=1),
-        f'<text x="866" y="58" text-anchor="end" fill="{PALETTE["green_soft"]}" '
-        f'font-family="{font}" font-size="9" opacity="0.75">TOP 5</text>',
-        f'<line x1="550" y1="65" x2="866" y2="65" stroke="{PALETTE["border"]}" stroke-width="1"/>',
+        _render_panel_box(538, 40, 340, 140, p),
+        render_pixel_text("LANGUAGE MATRIX", x=550, y=47, px=2, fill=p["telemetry_value"], letter_spacing=1),
+        f'<text x="866" y="58" text-anchor="end" fill="{p["text_secondary"]}" '
+        f'font-family="{font}" font-size="9" opacity="0.8">TOP 5</text>',
+        f'<line x1="550" y1="65" x2="866" y2="65" stroke="{p["border"]}" stroke-width="1"/>',
     ]
 
     segments = 16
@@ -332,15 +361,16 @@ def _render_language_matrix(languages: list[tuple[str, float, str]]) -> str:
     seg_h = 10
     seg_gap = 3
     bar_x = 644
-    unlit_color = "#162E1E"
+    unlit_color = p["unlit_block"]
 
-    for row_idx, (lang_name, pct, color) in enumerate(languages[:5]):
+    for row_idx, (lang_name, pct, raw_color) in enumerate(languages[:5]):
         row_y = 76 + row_idx * 20
         display_name = lang_name if len(lang_name) <= 11 else lang_name[:10] + "…"
         lit_count = max(1, min(segments, round((pct / 100.0) * segments))) if pct > 0 else 0
+        color = _resolve_language_color(lang_name, raw_color, p, theme)
 
         parts.append(
-            f'<text x="550" y="{row_y + 9}" fill="{PALETTE["white"]}" font-family="{font}" '
+            f'<text x="550" y="{row_y + 9}" fill="{p["text_primary"]}" font-family="{font}" '
             f'font-size="10.5" font-weight="600">{escape_xml(display_name)}</text>'
         )
 
@@ -368,15 +398,24 @@ def _render_language_matrix(languages: list[tuple[str, float, str]]) -> str:
     return "\n".join(parts)
 
 
-def build_telemetry_svg(user: str, stats: dict[str, Any], sync_date: str | None = None) -> str:
-    """Build the complete 900x196 Matrix Telemetry SVG string."""
+def build_telemetry_svg(
+    user: str,
+    stats: dict[str, Any],
+    sync_date: str | None = None,
+    theme: str = "dark",
+) -> str:
+    """Build the complete 900x196 Matrix Telemetry SVG string for the given theme."""
     if sync_date is None:
         sync_date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+    p = get_palette(theme)
+    use_glow = p["telemetry_glow"] != "0"
 
     title = f"{user}@4d-pocket:~/telemetry"
     right_tag = f"SYNC: {sync_date} UTC"
 
-    defs_and_styles = """<defs>
+    defs_block = (
+        """<defs>
   <filter id="matrix-glow" x="-30%" y="-30%" width="160%" height="160%">
     <feGaussianBlur stdDeviation="2.0" result="blur"/>
     <feMerge>
@@ -385,21 +424,26 @@ def build_telemetry_svg(user: str, stats: dict[str, Any], sync_date: str | None 
     </feMerge>
   </filter>
 </defs>
-<style>
-  @keyframes pocket-rise {
-    0% { transform: translateY(4px); opacity: 0; }
-    20% { opacity: 0.95; }
-    80% { opacity: 0.75; }
-    100% { transform: translateY(-18px); opacity: 0; }
-  }
-  @keyframes pulse-glow {
-    0%, 100% { opacity: 0.92; }
-    50% { opacity: 1; }
-  }
-  @keyframes seg-shimmer {
-    0%, 100% { opacity: 0.85; }
-    50% { opacity: 1; }
-  }
+"""
+        if use_glow
+        else ""
+    )
+
+    defs_and_styles = f"""{defs_block}<style>
+  @keyframes pocket-rise {{
+    0% {{ transform: translateY(4px); opacity: 0; }}
+    20% {{ opacity: 0.95; }}
+    80% {{ opacity: 0.75; }}
+    100% {{ transform: translateY(-18px); opacity: 0; }}
+  }}
+  @keyframes pulse-glow {{
+    0%, 100% {{ opacity: 0.92; }}
+    50% {{ opacity: 1; }}
+  }}
+  @keyframes seg-shimmer {{
+    0%, 100% {{ opacity: 0.85; }}
+    50% {{ opacity: 1; }}
+  }}
 </style>"""
 
     frame = render_terminal_frame(
@@ -407,14 +451,15 @@ def build_telemetry_svg(user: str, stats: dict[str, Any], sync_date: str | None 
         SVG_HEIGHT,
         title=title,
         right_tag=right_tag,
-        accent=PALETTE["green_mid"],
+        accent=p["green_mid"],
+        theme=theme,
     )
 
     body = "\n".join(
         [
-            _render_pocket_section(),
-            _render_metric_tiles(stats),
-            _render_language_matrix(stats["languages"]),
+            _render_pocket_section(p, use_glow),
+            _render_metric_tiles(stats, p, use_glow),
+            _render_language_matrix(stats["languages"], p, theme),
         ]
     )
 
@@ -432,13 +477,20 @@ def build_telemetry_svg(user: str, stats: dict[str, Any], sync_date: str | None 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     """Parse CLI arguments."""
     default_output = SCRIPT_DIR.parent / "assets" / "matrix-telemetry.svg"
-    parser = argparse.ArgumentParser(description="Generate Matrix x Doraemon 4D Pocket telemetry SVG.")
+    default_output_light = SCRIPT_DIR.parent / "assets" / "matrix-telemetry-light.svg"
+    parser = argparse.ArgumentParser(description="Generate Matrix x Doraemon 4D Pocket telemetry SVGs.")
     parser.add_argument("--user", default="elijah7x", help="GitHub username to query (default: elijah7x)")
     parser.add_argument(
         "--output",
         type=Path,
         default=default_output,
-        help=f"Output SVG path (default: {default_output})",
+        help=f"Output dark-theme SVG path (default: {default_output})",
+    )
+    parser.add_argument(
+        "--output-light",
+        type=Path,
+        default=default_output_light,
+        help=f"Output light-theme SVG path (default: {default_output_light})",
     )
     parser.add_argument(
         "--offline",
@@ -452,10 +504,18 @@ def main(argv: list[str] | None = None) -> int:
     """CLI entrypoint."""
     args = parse_args(argv)
     stats = fetch_github_stats(args.user, offline=args.offline)
-    svg = build_telemetry_svg(args.user, stats)
+    sync_date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+    dark_svg = build_telemetry_svg(args.user, stats, sync_date=sync_date, theme="dark")
+    light_svg = build_telemetry_svg(args.user, stats, sync_date=sync_date, theme="light")
+
     output_path: Path = args.output
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(svg, encoding="utf-8")
+    output_path.write_text(dark_svg, encoding="utf-8")
+
+    light_output_path: Path = args.output_light
+    light_output_path.parent.mkdir(parents=True, exist_ok=True)
+    light_output_path.write_text(light_svg, encoding="utf-8")
     return 0
 
 

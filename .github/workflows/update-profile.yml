@@ -34,16 +34,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 scripts/generate_telemetry.py
 
-      - name: Commit and push telemetry SVG if changed
+      - name: Commit and push telemetry SVGs if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if [ -n "$(git status --porcelain assets/matrix-telemetry.svg)" ]; then
-            git add assets/matrix-telemetry.svg
+          if [ -n "$(git status --porcelain assets/matrix-telemetry.svg assets/matrix-telemetry-light.svg)" ]; then
+            git add assets/matrix-telemetry.svg assets/matrix-telemetry-light.svg
             git commit -m "chore(telemetry): update 4D pocket matrix telemetry"
             git push
           else
-            echo "No changes to assets/matrix-telemetry.svg"
+            echo "No changes to telemetry SVGs"
           fi
 
   snake:
@@ -56,6 +56,7 @@ jobs:
           github_user_name: elijah7x
           outputs: |
             dist/github-contribution-grid-snake-dark.svg?palette=github-dark&color_snake=%2300A2FF&color_dots=%230d1912,%23144626,%231e7a3a,%2327b54f,%2339ff14
+            dist/github-contribution-grid-snake-light.svg?palette=github-light&color_snake=%230088E0&color_dots=%23ebedf0,%23bbf7d0,%234ade80,%2316a34a,%2315803d
 
       - name: Deploy snake SVG to output branch
         uses: crazy-max/ghaction-github-pages@v4

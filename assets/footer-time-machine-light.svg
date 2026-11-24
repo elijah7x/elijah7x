@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 84" width="900" height="84" role="img" aria-label="elijah7x Matrix Time Machine Footer">
+<style>
+@keyframes speed-scroll {
+  0% { transform: translateX(0px); }
+  100% { transform: translateX(-300px); }
+}
+@keyframes tm-glide {
+  0% { transform: translateX(-80px); }
+  100% { transform: translateX(920px); }
+}
+@keyframes tm-bob {
+  0%, 100% { transform: translateY(-2px); }
+  50% { transform: translateY(2px); }
+}
+.speed-fast { animation: speed-scroll 1.8s linear infinite; }
+.speed-slow { animation: speed-scroll 3.1s linear infinite; }
+.tm-glide { animation: tm-glide 12s linear infinite -4.2s; }
+.tm-bob { animation: tm-bob 1.4s ease-in-out infinite; }
+</style>
+<defs>
+  <clipPath id="footer-tunnel-clip"><rect x="2" y="2" width="896" height="80"/></clipPath>
+  <pattern id="footer-scanlines" width="4" height="4" patternUnits="userSpaceOnUse">
+    <rect x="0" y="0" width="4" height="2" fill="#0F3D22" fill-opacity="0.035"/>
+  </pattern>
+</defs>
+<g shape-rendering="crispEdges">
+  <rect x="0" y="0" width="900" height="84" fill="#F7FBF8"/>
+  <rect x="2" y="4" width="896" height="76" fill="#EEF7F1" fill-opacity="0.55"/>
+  <rect x="2" y="2" width="896" height="80" fill="url(#footer-scanlines)"/>
+  <rect x="0" y="0" width="900" height="2" fill="#9ED0B0"/>
+  <rect x="0" y="82" width="900" height="2" fill="#9ED0B0"/>
+  <rect x="0" y="0" width="2" height="84" fill="#9ED0B0"/>
+  <rect x="898" y="0" width="2" height="84" fill="#9ED0B0"/>
+  <rect x="0" y="0" width="14" height="2" fill="#15803D"/>
+  <rect x="0" y="0" width="2" height="10" fill="#15803D"/>
+  <rect x="2" y="2" width="2" height="2" fill="#16A34A"/>
+  <rect x="886" y="0" width="14" height="2" fill="#15803D"/>
+  <rect x="898" y="0" width="2" height="10" fill="#15803D"/>
+  <rect x="896" y="2" width="2" height="2" fill="#16A34A"/>
+  <rect x="0" y="82" width="14" height="2" fill="#15803D"/>
+  <rect x="0" y="74" width="2" height="10" fill="#15803D"/>
+  <rect x="2" y="80" width="2" height="2" fill="#16A34A"/>
+  <rect x="886" y="82" width="14" height="2" fill="#15803D"/>
+  <rect x="898" y="74" width="2" height="10" fill="#15803D"/>
+  <rect x="896" y="80" width="2" height="2" fill="#16A34A"/>
+</g>
+<g clip-path="url(#footer-tunnel-clip)">
+  <g class="speed-slow" shape-rendering="crispEdges"><rect x="45" y="30" width="90" height="2" fill="#86C79D" fill-opacity="0.60"/><rect x="185" y="16" width="64" height="2" fill="#86C79D" fill-opacity="0.50"/><rect x="260" y="44" width="32" height="2" fill="#86C79D" fill-opacity="0.55"/><rect x="345" y="30" width="90" height="2" fill="#86C79D" fill-opacity="0.60"/><rect x="485" y="16" width="64" height="2" fill="#86C79D" fill-opacity="0.50"/><rect x="560" y="44" width="32" height="2" fill="#86C79D" fill-opacity="0.55"/><rect x="645" y="30" width="90" height="2" fill="#86C79D" fill-opacity="0.60"/><rect x="785" y="16" width="64" height="2" fill="#86C79D" fill-opacity="0.50"/><rect x="860" y="44" width="32" height="2" fill="#86C79D" fill-opacity="0.55"/><rect x="945" y="30" width="90" height="2" fill="#86C79D" fill-opacity="0.60"/><rect x="1085" y="16" width="64" height="2" fill="#86C79D" fill-opacity="0.50"/><rect x="1160" y="44" width="32" height="2" fill="#86C79D" fill-opacity="0.55"/></g>
+  <g class="speed-fast" shape-rendering="crispEdges"><rect x="18" y="12" width="54" height="2" fill="#15803D" fill-opacity="0.45"/><rect x="140" y="22" width="76" height="2" fill="#16A34A" fill-opacity="0.32"/><rect x="235" y="38" width="42" height="2" fill="#15803D" fill-opacity="0.40"/><rect x="318" y="12" width="54" height="2" fill="#15803D" fill-opacity="0.45"/><rect x="440" y="22" width="76" height="2" fill="#16A34A" fill-opacity="0.32"/><rect x="535" y="38" width="42" height="2" fill="#15803D" fill-opacity="0.40"/><rect x="618" y="12" width="54" height="2" fill="#15803D" fill-opacity="0.45"/><rect x="740" y="22" width="76" height="2" fill="#16A34A" fill-opacity="0.32"/><rect x="835" y="38" width="42" height="2" fill="#15803D" fill-opacity="0.40"/><rect x="918" y="12" width="54" height="2" fill="#15803D" fill-opacity="0.45"/><rect x="1040" y="22" width="76" height="2" fill="#16A34A" fill-opacity="0.32"/><rect x="1135" y="38" width="42" height="2" fill="#15803D" fill-opacity="0.40"/></g>
+  <g class="tm-glide">
+    <g class="tm-bob"><g shape-rendering="crispEdges"><rect x="39" y="11" width="3" height="3" fill="#FFFFFF"/><rect x="36" y="14" width="6" height="3" fill="#FACC15"/><rect x="33" y="17" width="3" height="3" fill="#CA8A04"/><rect x="36" y="17" width="3" height="3" fill="#181C20"/><rect x="30" y="20" width="12" height="3" fill="#0088E0"/><rect x="30" y="23" width="3" height="3" fill="#0088E0"/><rect x="33" y="23" width="3" height="3" fill="#39FF14"/><rect x="36" y="23" width="3" height="3" fill="#0284C7"/><rect x="39" y="23" width="3" height="3" fill="#0088E0"/><rect x="12" y="26" width="12" height="3" fill="#DC2626"/><rect x="30" y="26" width="3" height="3" fill="#0088E0"/><rect x="33" y="26" width="6" height="3" fill="#181C20"/><rect x="39" y="26" width="3" height="3" fill="#0088E0"/><rect x="12" y="29" width="12" height="3" fill="#DC2626"/><rect x="30" y="29" width="12" height="3" fill="#0088E0"/><rect x="48" y="29" width="6" height="3" fill="#FACC15"/><rect x="6" y="32" width="6" height="3" fill="#39FF14"/><rect x="12" y="32" width="48" height="3" fill="#FACC15"/><rect x="0" y="35" width="3" height="3" fill="#22C55E"/><rect x="3" y="35" width="3" height="3" fill="#39FF14"/><rect x="6" y="35" width="6" height="3" fill="#22C55E"/><rect x="12" y="35" width="48" height="3" fill="#0088E0"/><rect x="60" y="35" width="6" height="3" fill="#FACC15"/><rect x="6" y="38" width="6" height="3" fill="#39FF14"/><rect x="12" y="38" width="48" height="3" fill="#005FA3"/><rect x="60" y="38" width="3" height="3" fill="#CA8A04"/><rect x="12" y="41" width="6" height="3" fill="#CA8A04"/><rect x="30" y="41" width="6" height="3" fill="#CA8A04"/><rect x="48" y="41" width="6" height="3" fill="#CA8A04"/><rect x="12" y="44" width="3" height="3" fill="#22C55E"/><rect x="30" y="44" width="3" height="3" fill="#39FF14"/><rect x="48" y="44" width="3" height="3" fill="#22C55E"/></g></g>
+  </g>
+</g>
+<g shape-rendering="crispEdges">
+  <rect x="116" y="53" width="668" height="22" fill="#FFFFFF" fill-opacity="0.92"/>
+  <rect x="116" y="53" width="668" height="1" fill="#9ED0B0"/>
+  <rect x="116" y="74" width="668" height="1" fill="#9ED0B0"/>
+  <rect x="116" y="53" width="1" height="22" fill="#9ED0B0"/>
+  <rect x="783" y="53" width="1" height="22" fill="#9ED0B0"/>
+  <rect x="118" y="55" width="2" height="2" fill="#15803D"/>
+  <rect x="780" y="71" width="2" height="2" fill="#15803D"/>
+</g>
+<text x="450" y="68" text-anchor="middle" font-family="&apos;SF Mono&apos;, &apos;JetBrains Mono&apos;, &apos;Fira Code&apos;, ui-monospace, Menlo, Consolas, monospace" font-size="11.5" font-weight="500" fill="#1D4D32">// 4D-POCKET ONLINE · &quot;Every great tool feels like a gadget from 2112.&quot; · github.com/elijah7x</text>
+</svg>

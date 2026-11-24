@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import random
 
-PALETTE: dict[str, str] = {
+DARK_PALETTE: dict[str, str] = {
     "bg": "#070D09",
     "bg_panel": "#0D1B12",
     "bg_header": "#122619",
@@ -30,7 +30,102 @@ PALETTE: dict[str, str] = {
     "coat_light": "#2D333B",
     "white": "#F0F6FC",
     "muted": "#8BA894",
+    "text_primary": "#E2F5E8",
+    "text_secondary": "#9BC4A8",
+    "text_card": "#D8EFE0",
+    "text_footer": "#A7D7B7",
+    "chip_text": "#F0F6FC",
+    "pill_text": "#F0F6FC",
+    "stage_bg": "#070D09",
+    "tile_bg": "#0B160F",
+    "unlit_block": "#162E1E",
+    "scanline_color": "#000000",
+    "scanline_opacity": "0.16",
+    "rain_color": "#39FF14",
+    "h2_geo_stroke": "#F0F6FC",
+    "h2_title": "#F0F6FC",
+    "tivano_title": "#38BDF8",
+    "token_title": "#FACC15",
+    "hero_title_main": "#39FF14",
+    "hero_title_shadow": "#0088E0",
+    "telemetry_value": "#39FF14",
+    "telemetry_glow": "1",
+    "bell_gold": "#FACC15",
+    "bell_gold_dark": "#CA8A04",
+    "hud_green": "#39FF14",
+    "hud_green_mid": "#22C55E",
+    "portal_bg": "#070D09",
+    "portal_bg_alt": "#122619",
+    "shadow_green": "#22C55E",
+    "shadow_green_dim": "#2F6B43",
 }
+
+LIGHT_PALETTE: dict[str, str] = {
+    "bg": "#F7FBF8",
+    "bg_panel": "#EEF7F1",
+    "bg_header": "#E1F2E7",
+    "border": "#9ED0B0",
+    "border_bright": "#16A34A",
+    "green": "#16A34A",
+    "green_mid": "#15803D",
+    "green_soft": "#166534",
+    "green_dim": "#86C79D",
+    "dora_blue": "#0088E0",
+    "dora_blue_dark": "#005FA3",
+    "dora_blue_light": "#0284C7",
+    "dora_red": "#DC2626",
+    "dora_red_dark": "#991B1B",
+    "dora_gold": "#D97706",
+    "dora_gold_dark": "#92400E",
+    "door_pink": "#EC4899",
+    "door_pink_dark": "#BE185D",
+    "dorayaki_brown": "#C27834",
+    "dorayaki_dark": "#7C3F13",
+    "dorayaki_cream": "#FDE68A",
+    "coat": "#181C20",
+    "coat_light": "#374151",
+    "white": "#FFFFFF",
+    "muted": "#3D6850",
+    "text_primary": "#0F291A",
+    "text_secondary": "#2D593E",
+    "text_card": "#1E3A2B",
+    "text_footer": "#1D4D32",
+    "chip_text": "#0F291A",
+    "pill_text": "#133020",
+    "stage_bg": "#ECF7F0",
+    "tile_bg": "#FFFFFF",
+    "unlit_block": "#D4EADF",
+    "scanline_color": "#0F3D22",
+    "scanline_opacity": "0.035",
+    "rain_color": "#16A34A",
+    "h2_geo_stroke": "#0F291A",
+    "h2_title": "#0F291A",
+    "tivano_title": "#026AA7",
+    "token_title": "#B45309",
+    "hero_title_main": "#15803D",
+    "hero_title_shadow": "#38BDF8",
+    "telemetry_value": "#15803D",
+    "telemetry_glow": "0",
+    "bell_gold": "#FACC15",
+    "bell_gold_dark": "#CA8A04",
+    "hud_green": "#39FF14",
+    "hud_green_mid": "#22C55E",
+    "portal_bg": "#07130C",
+    "portal_bg_alt": "#122B1B",
+    "shadow_green": "#16A34A",
+    "shadow_green_dim": "#86C79D",
+}
+
+PALETTE: dict[str, str] = DARK_PALETTE
+
+
+def get_palette(theme: str = "dark") -> dict[str, str]:
+    """Return a copy of the palette for the requested theme ('dark' or 'light')."""
+    if theme == "dark":
+        return DARK_PALETTE.copy()
+    if theme == "light":
+        return LIGHT_PALETTE.copy()
+    raise ValueError(f"Unknown theme: {theme!r}. Expected 'dark' or 'light'.")
 
 FONT_MONO = "'SF Mono', 'JetBrains Mono', 'Fira Code', ui-monospace, Menlo, Consolas, monospace"
 
@@ -639,10 +734,12 @@ def render_matrix_rain(
     seed: int = 42,
     opacity: float = 0.20,
     y_start: int = 28,
+    theme: str = "dark",
 ) -> str:
     """Generate deterministic falling Matrix green code columns clipped to the canvas."""
+    p = get_palette(theme)
     rng = random.Random(seed)
-    clip_id = f"matrix-rain-clip-{width}x{height}-{seed}"
+    clip_id = f"matrix-rain-clip-{width}x{height}-{seed}-{theme}"
     clip_h = max(0, height - y_start - 2)
     clip_w = max(0, width - 4)
 
@@ -666,16 +763,16 @@ def render_matrix_rain(
         for g_idx in range(chain_len):
             ch = escape_xml(rng.choice(_MATRIX_GLYPHS))
             if g_idx == chain_len - 1:
-                g_fill = PALETTE["green_soft"]
+                g_fill = p["green_soft"] if theme == "dark" else p["rain_color"]
                 t_op = "0.95"
             elif g_idx >= chain_len - 3:
-                g_fill = PALETTE["green"]
+                g_fill = p["rain_color"]
                 t_op = "0.80"
             elif g_idx < 3:
-                g_fill = PALETTE["green_dim"]
+                g_fill = p["green_dim"]
                 t_op = "0.45"
             else:
-                g_fill = PALETTE["green_mid"]
+                g_fill = p["green_mid"] if theme == "dark" else p["rain_color"]
                 t_op = "0.65"
 
             dy_attr = ' y="0"' if g_idx == 0 else f' dy="{line_dy}"'
@@ -705,12 +802,15 @@ def render_terminal_frame(
     height: int,
     title: str,
     right_tag: str = "",
-    accent: str = "#22C55E",
+    accent: str | None = None,
     header_height: int = 28,
+    theme: str = "dark",
 ) -> str:
-    """Render a pixel-crisp dark terminal frame with scanlines, corner pixels, and header."""
-    pattern_id = f"crt-scanlines-{width}x{height}"
-    accent_esc = escape_xml(accent)
+    """Render a pixel-crisp terminal frame with scanlines, corner pixels, and header."""
+    p = get_palette(theme)
+    resolved_accent = p["green_mid"] if accent is None else accent
+    pattern_id = f"crt-scanlines-{width}x{height}-{theme}"
+    accent_esc = escape_xml(resolved_accent)
     title_esc = escape_xml(title)
     right_esc = escape_xml(right_tag)
     font_esc = escape_xml(FONT_MONO)
@@ -722,38 +822,38 @@ def render_terminal_frame(
 
     parts: list[str] = [
         f'<defs><pattern id="{pattern_id}" width="4" height="4" patternUnits="userSpaceOnUse">'
-        f'<rect x="0" y="0" width="4" height="2" fill="#000000" fill-opacity="0.16"/>'
+        f'<rect x="0" y="0" width="4" height="2" fill="{p["scanline_color"]}" fill-opacity="{p["scanline_opacity"]}"/>'
         f"</pattern></defs>",
         '<g shape-rendering="crispEdges">',
-        f'<rect x="0" y="0" width="{width}" height="{height}" fill="{PALETTE["bg"]}"/>',
+        f'<rect x="0" y="0" width="{width}" height="{height}" fill="{p["bg"]}"/>',
         f'<rect x="2" y="{header_height}" width="{width - 4}" height="{max(0, height - header_height - 2)}" fill="url(#{pattern_id})"/>',
-        f'<rect x="2" y="2" width="{width - 4}" height="{header_inner_h}" fill="{PALETTE["bg_header"]}"/>',
-        f'<rect x="2" y="{divider_y}" width="{width - 4}" height="2" fill="{PALETTE["border"]}"/>',
+        f'<rect x="2" y="2" width="{width - 4}" height="{header_inner_h}" fill="{p["bg_header"]}"/>',
+        f'<rect x="2" y="{divider_y}" width="{width - 4}" height="2" fill="{p["border"]}"/>',
         # Outer 2px border.
-        f'<rect x="0" y="0" width="{width}" height="2" fill="{PALETTE["border"]}"/>',
-        f'<rect x="0" y="{height - 2}" width="{width}" height="2" fill="{PALETTE["border"]}"/>',
-        f'<rect x="0" y="0" width="2" height="{height}" fill="{PALETTE["border"]}"/>',
-        f'<rect x="{width - 2}" y="0" width="2" height="{height}" fill="{PALETTE["border"]}"/>',
+        f'<rect x="0" y="0" width="{width}" height="2" fill="{p["border"]}"/>',
+        f'<rect x="0" y="{height - 2}" width="{width}" height="2" fill="{p["border"]}"/>',
+        f'<rect x="0" y="0" width="2" height="{height}" fill="{p["border"]}"/>',
+        f'<rect x="{width - 2}" y="0" width="2" height="{height}" fill="{p["border"]}"/>',
         # Bright pixel corner brackets.
         f'<rect x="0" y="0" width="8" height="2" fill="{accent_esc}"/>',
         f'<rect x="0" y="0" width="2" height="8" fill="{accent_esc}"/>',
-        f'<rect x="2" y="2" width="2" height="2" fill="{PALETTE["green"]}"/>',
+        f'<rect x="2" y="2" width="2" height="2" fill="{p["green"]}"/>',
         f'<rect x="{width - 8}" y="0" width="8" height="2" fill="{accent_esc}"/>',
         f'<rect x="{width - 2}" y="0" width="2" height="8" fill="{accent_esc}"/>',
-        f'<rect x="{width - 4}" y="2" width="2" height="2" fill="{PALETTE["green"]}"/>',
+        f'<rect x="{width - 4}" y="2" width="2" height="2" fill="{p["green"]}"/>',
         f'<rect x="0" y="{height - 2}" width="8" height="2" fill="{accent_esc}"/>',
         f'<rect x="0" y="{height - 8}" width="2" height="8" fill="{accent_esc}"/>',
-        f'<rect x="2" y="{height - 4}" width="2" height="2" fill="{PALETTE["green"]}"/>',
+        f'<rect x="2" y="{height - 4}" width="2" height="2" fill="{p["green"]}"/>',
         f'<rect x="{width - 8}" y="{height - 2}" width="8" height="2" fill="{accent_esc}"/>',
         f'<rect x="{width - 2}" y="{height - 8}" width="2" height="8" fill="{accent_esc}"/>',
-        f'<rect x="{width - 4}" y="{height - 4}" width="2" height="2" fill="{PALETTE["green"]}"/>',
-        # 6x6 pixel window status squares.
-        f'<rect x="12" y="{dot_y}" width="6" height="6" fill="{PALETTE["dora_red"]}"/>',
-        f'<rect x="22" y="{dot_y}" width="6" height="6" fill="{PALETTE["dora_gold"]}"/>',
-        f'<rect x="32" y="{dot_y}" width="6" height="6" fill="{PALETTE["green_mid"]}"/>',
+        f'<rect x="{width - 4}" y="{height - 4}" width="2" height="2" fill="{p["green"]}"/>',
+        # 6x6 pixel window status squares (kept bright in both themes).
+        f'<rect x="12" y="{dot_y}" width="6" height="6" fill="#E53935"/>',
+        f'<rect x="22" y="{dot_y}" width="6" height="6" fill="#FACC15"/>',
+        f'<rect x="32" y="{dot_y}" width="6" height="6" fill="#22C55E"/>',
         "</g>",
         f'<text x="48" y="{text_y}" font-family="{font_esc}" font-size="11" '
-        f'font-weight="600" fill="{PALETTE["green_soft"]}">{title_esc}</text>',
+        f'font-weight="600" fill="{p["green_soft"]}">{title_esc}</text>',
     ]
 
     if right_tag:
